@@ -44,14 +44,7 @@ class Webcam(Camera):
 		iplimage = cv.QueryFrame(self._capture)
 		if iplimage is None:
 			raise CameraError('Could not query image', self.camera_number)
-		
-		rgb = ipl2array(iplimage)
-		
-		# Standard NTSC conversion formula
-		#self.frame = N.array((0.2989 * rgb[... ,0] 
-		#		   + 0.5870 * rgb[..., 1]
-		#		   + 0.1140 * rgb[..., 2]), dtype=N.uint8)
-		self.frame = rgb
+		self.frame = ipl2array(iplimage)
 
 	@property
 	def resolution(self):
