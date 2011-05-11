@@ -39,3 +39,10 @@ class Camera(object):
     @roi.setter
     def roi(self, value):
         raise NotImplementedError()
+    
+    def find_resolutions(self):
+        '''
+        Returns a list of resolution tuples that this camera supports.
+        '''
+        # Default: return the camera's own default resolution
+        return [self.resolution]
