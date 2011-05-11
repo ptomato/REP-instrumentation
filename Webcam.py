@@ -51,7 +51,7 @@ class Webcam(Camera):
 		'''Resolution of the webcam - a 2-tuple'''
 		width = cv.GetCaptureProperty(self._capture, FRAME_WIDTH)
 		height = cv.GetCaptureProperty(self._capture, FRAME_HEIGHT)
-		return (width, height)
+		return (int(width), int(height))
 	
 	@resolution.setter
 	def resolution(self, value):
