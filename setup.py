@@ -10,4 +10,4 @@ setup(name='REP-instrumentation',
     url='https://github.com/ptomato/REP-instrumentation',
     license='gpl3',
     requires=['pyvisa'],
-    py_modules=['Camera', 'ApogeeCam', 'Webcam', 'esp300'])
+    py_modules=['Camera', 'ApogeeCam', 'Webcam', 'DirectShow', 'esp300'])
