@@ -15,7 +15,7 @@ class Camera(object):
         self.open()
         return self
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, *args):
         self.close()
         return False # don't suppress exceptions
 
