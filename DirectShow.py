@@ -43,6 +43,10 @@ class DirectShow(Camera):
             buffer=buffer, dtype=self._dtype)
     
     @property
+    def id_string(self):
+        return 'DirectShow driver, unknown camera'
+    
+    @property
     def resolution(self):
         return (self._width, self._height)
     
@@ -50,3 +54,7 @@ class DirectShow(Camera):
     def resolution(self, value):
         width, height = value
         self._cam.setResolution(width, height)
+    
+    def configure(self):
+        self._cam.displayCaptureFilterProperties()
+        self._cam.displayCapturePinProperties()

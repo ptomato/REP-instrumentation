@@ -68,6 +68,12 @@ class ApogeeCam(Camera):
         return self._cam.DriverVersion
 
     @property
+    def id_string(self):
+        return 'Apogee {} Driver version: {}'.format(
+            self.camera_model,
+            self.driver_version)
+
+    @property
     def roi(self):
         return (self._cam.RoiStartX,
             self._cam.RoiStartY,

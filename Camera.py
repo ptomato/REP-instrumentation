@@ -29,6 +29,10 @@ class Camera(object):
         raise NotImplementedError()
 
     @property
+    def id_string(self):
+        raise NotImplementedError()
+
+    @property
     def resolution(self):
         raise NotImplementedError()
 
@@ -46,3 +50,7 @@ class Camera(object):
         '''
         # Default: return the camera's own default resolution
         return [self.resolution]
+    
+    def configure(self):
+        """Opens a dialog to set the camera's parameters."""
+        pass

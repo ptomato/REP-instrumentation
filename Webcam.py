@@ -47,6 +47,10 @@ class Webcam(Camera):
 		self.frame = ipl2array(iplimage)
 
 	@property
+	def id_string(self):
+		return 'OpenCV driver, unknown camera'
+
+	@property
 	def resolution(self):
 		'''Resolution of the webcam - a 2-tuple'''
 		width = cv.GetCaptureProperty(self._capture, FRAME_WIDTH)
