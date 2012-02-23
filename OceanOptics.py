@@ -111,6 +111,8 @@ class OceanOptics(object):
 
 		# Initialize
 		vpp43.write(self._vi, '\x01')  # Reset command
+		# Reset must be followed by reading the acquired spectrum
+		self._read_spectrum_data()
 	
 	def close(self):
 		vpp43.close(self._vi)
@@ -134,6 +136,9 @@ class OceanOptics(object):
 		vpp43.write(self._vi, '\x05' + chr(configuration_index))
 		answer = vpp43.read(self._vi, 18)
 		return answer[2:answer.find('\x00', 2)] # from byte 3 to the next null
+
+	def _read_spectrum_data(self):
+		raise NotImplementedError
 
 	@property
 	def serial_number(self):
@@ -201,6 +206,9 @@ class OceanOptics2k(OceanOptics):
 
 		# Request spectrum
 		vpp43.write(self._vi, '\x09')
+		return self._read_spectrum_data()
+
+	def _read_spectrum_data(self):
 
 		# Assign endpoint
 		vpp43.set_attribute(self._vi, VI_ATTR_USB_BULK_IN_PIPE, 0x82)
