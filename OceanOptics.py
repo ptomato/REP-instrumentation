@@ -279,7 +279,7 @@ class Torus(OceanOptics4k):
 	def __init__(self, *args, **kwargs):
 		OceanOptics4k.__init__(self, *args, **kwargs)
 
-if __name__ == '__main__':
+def mini_spectrometer():
 	import gtk
 	import gobject
 	import matplotlib
@@ -321,3 +321,6 @@ if __name__ == '__main__':
 	win.show_all()
 	gtk.main()
 	sm.close()
+
+if __name__ == '__main__':
+	mini_spectrometer()
