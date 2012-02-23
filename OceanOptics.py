@@ -6,6 +6,7 @@ from pyvisa import vpp43_types
 from pyvisa.visa_messages import completion_and_error_messages \
 	as _completion_and_error_messages
 import numpy as N
+import struct
 
 # OceanOptics extended error code?
 OO_ERROR_SYNC            = _to_int(0xBFFC0801L)
@@ -165,6 +166,11 @@ class OceanOptics2k(OceanOptics):
 	def integration_time(self):
 	    """Integration time in milliseconds"""
 	    return int(self._query_status()[2:4].encode('hex'), 16)
+
+	@integration_time.setter
+	def integration_time(self, value):
+		packed_value = struct.pack('<I', value)
+		vpp43.write(self._vi, '\x02' + packed_value)
 	
 	@property
 	def lamp_enabled(self):
