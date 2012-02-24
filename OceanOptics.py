@@ -66,25 +66,25 @@ def autodetect_spectrometer(resource_name, *args, **kwargs):
 	
 	if model_code in (4098, 4100, 4106):
 		# USB2000, ADC1000, HR2000
-		return OceanOptics2k(resource_name, model_code, *args, **kwargs)
+		return OceanOptics2k(resource_name, *args, **kwargs)
 	if model_code == 4114:
-		return HR4000(resource_name, model_code, *args, **kwargs)
+		return HR4000(resource_name, *args, **kwargs)
 	if model_code == 4118:
-		return HR2000Plus(resource_name, model_code, *args, **kwargs)
+		return HR2000Plus(resource_name, *args, **kwargs)
 	if model_code == 4120:
-		return QE65000(resource_name, model_code, *args, **kwargs)
+		return QE65000(resource_name, *args, **kwargs)
 	if model_code == 4126:
-		return USB2000Plus(resource_name, model_code, *args, **kwargs)
+		return USB2000Plus(resource_name, *args, **kwargs)
 	if model_code == 4130:
-		return USB4000(resource_name, model_code, *args, **kwargs)
+		return USB4000(resource_name, *args, **kwargs)
 	if model_code in (4134, 4136):
 		# NIRQuest512, NIRQuest256
-		return OceanOpticsNIRQuest(resource_name, model_code, *args, **kwargs)
+		return OceanOpticsNIRQuest(resource_name, *args, **kwargs)
 	if model_code in (4138, 4140):
 		# Maya Pro, Maya
-		return OceanOpticsMaya(resource_name, model_code, *args, **kwargs)
+		return OceanOpticsMaya(resource_name, *args, **kwargs)
 	if model_code == 4160:
-		return Torus(resource_name, model_code, *args, **kwargs)
+		return Torus(resource_name, *args, **kwargs)
 
 	raise visa.VisaIOError(VI_ERROR_OO_MODEL_NOT_FOUND)
 
@@ -93,12 +93,9 @@ class OceanOptics(object):
 
 	def __init__(self, *args, **kwargs):
 		resource_name = args[0]
-		model_code = args[1]
 		in_pipe = kwargs.pop('in_pipe')
 		out_pipe = kwargs.pop('out_pipe')
 		timeout = kwargs.pop('timeout', 10000)
-
-		self._model = model_code
 
 		# Open instrument
 		self._vi = vpp43.open(visa.resource_manager.session, resource_name)
