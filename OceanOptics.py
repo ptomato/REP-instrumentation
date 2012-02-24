@@ -100,6 +100,7 @@ def autodetect_spectrometer(resource_name, *args, **kwargs):
 class OceanOptics(object):
 
 	def __init__(self, resource_name, timeout=10000):
+		self._resource_name = resource_name
 		self._timeout = timeout
 
 		# Check model code to make sure we are using the right command language
@@ -111,8 +112,12 @@ class OceanOptics(object):
 				'model code ({}) than the driver expected '
 				'({}).'.format(model_code, self._model_code))
 
+		self._vi = None  # connection not currently open
+
+	def open(self):
 		# Open instrument
-		self._vi = vpp43.open(visa.resource_manager.session, resource_name)
+		self._vi = vpp43.open(visa.resource_manager.session,
+			self._resource_name)
 		vpp43.set_attribute(self._vi, vpp43.VI_ATTR_TMO_VALUE, self._timeout)
 		# Timeout value should always be higher than integration time
 
@@ -127,8 +132,10 @@ class OceanOptics(object):
 	
 	def close(self):
 		vpp43.close(self._vi)
+		self._vi = None
 	
 	def __enter__(self):
+		self.open()
 		return self
 	
 	def __exit__(self, *args):
@@ -355,7 +362,8 @@ def mini_spectrometer():
 	canvas = FigureCanvas(fig)
 	win.add(canvas)
 
-	sm = autodetect_spectrometer('USB2000') 
+	sm = autodetect_spectrometer('USB2000')
+	sm.open()
 	title = '{}, {} pixels, {} ms'.format(sm.serial_number,
 		sm.num_pixels, sm.integration_time)
 	ax.set_title(title)
