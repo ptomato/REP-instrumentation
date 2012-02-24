@@ -91,20 +91,17 @@ def autodetect_spectrometer(resource_name, *args, **kwargs):
 
 class OceanOptics(object):
 
-	def __init__(self, *args, **kwargs):
-		resource_name = args[0]
-		in_pipe = kwargs.pop('in_pipe')
-		out_pipe = kwargs.pop('out_pipe')
-		timeout = kwargs.pop('timeout', 10000)
+	def __init__(self, resource_name, timeout=10000):
+		self._timeout = timeout
 
 		# Open instrument
 		self._vi = vpp43.open(visa.resource_manager.session, resource_name)
-		vpp43.set_attribute(self._vi, vpp43.VI_ATTR_TMO_VALUE, timeout)
+		vpp43.set_attribute(self._vi, vpp43.VI_ATTR_TMO_VALUE, self._timeout)
 		# Timeout value should always be higher than integration time
 
 		# Assign endpoint
-		vpp43.set_attribute(self._vi, VI_ATTR_USB_BULK_IN_PIPE, in_pipe)
-		vpp43.set_attribute(self._vi, VI_ATTR_USB_BULK_OUT_PIPE, out_pipe)
+		vpp43.set_attribute(self._vi, VI_ATTR_USB_BULK_IN_PIPE, self._in_pipe)
+		vpp43.set_attribute(self._vi, VI_ATTR_USB_BULK_OUT_PIPE, self._out_pipe)
 
 		# Initialize
 		vpp43.write(self._vi, '\x01')  # Reset command
@@ -155,9 +152,9 @@ class OceanOptics(object):
 		return a + b * p + c * p ** 2.0 + d * p ** 3.0
 
 class OceanOptics2k(OceanOptics):
+	_in_pipe = 0x87
+	_out_pipe = 0x02
 	def __init__(self, *args, **kwargs):
-		kwargs['in_pipe'] = 0x87
-		kwargs['out_pipe'] = 0x02
 		OceanOptics.__init__(self, *args, **kwargs)
 	
 	@property
@@ -234,9 +231,10 @@ class OceanOptics2k(OceanOptics):
 		return N.fromstring(data, N.int16)
 
 class OceanOptics4k(OceanOptics):
+	_in_pipe = 0x81
+	_out_pipe = 0x01
+
 	def __init__(self, *args, **kwargs):
-		kwargs['in_pipe'] = 0x81
-		kwargs['out_pipe'] = 0x01
 		OceanOptics.__init__(self, *args, **kwargs)
 
 		# Query USB speed
