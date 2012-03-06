@@ -9,7 +9,10 @@ setup(name='REP-instrumentation',
     author_email='philip.chimento@gmail.com',
     url='https://github.com/ptomato/REP-instrumentation',
     license='gpl3',
-    requires=['pyvisa'],
+    requires=[
+        'pyvisa',
+        'VideoCapture (>= 0.9.5)'
+    ],
     py_modules=[
     	'Camera',
     	'ApogeeCam',

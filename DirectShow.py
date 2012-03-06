@@ -44,7 +44,7 @@ class DirectShow(Camera):
     
     @property
     def id_string(self):
-        return 'DirectShow driver, unknown camera'
+        return self._cam.getDisplayName() + ' (DirectShow driver)'
     
     @property
     def resolution(self):
