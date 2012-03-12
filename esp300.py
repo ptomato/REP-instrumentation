@@ -43,6 +43,7 @@ class ESP300(visa.GpibInstrument, object):
         self.acceleration = AxisProperty(self, 'AC')
         self.deceleration = AxisProperty(self, 'AG')
         self.position = AxisProperty(self, 'PA') # xxPA? is equivalent to xxTP
+        self.backlash = AxisProperty(self, 'BA')
         
         # Clear any errors from the device
         while self.ask('TE?') != '0':
