@@ -175,9 +175,19 @@ class OceanOptics(object):
 		a, b, c, d = self.wavelength_calibration_coefficients
 		return a + b * p + c * p ** 2.0 + d * p ** 3.0
 
+	@property
+	def integration_time(self):
+	    raise NotImplementedError
+	    
+	@integration_time.setter
+	def integration_time(self, value):
+	    raise NotImplementedError
+
 class OceanOptics2k(OceanOptics):
 	_in_pipe = 0x87
 	_out_pipe = 0x02
+	_min_integration_time = 3e-3
+
 	def __init__(self, *args, **kwargs):
 		OceanOptics.__init__(self, *args, **kwargs)
 	
@@ -187,12 +197,15 @@ class OceanOptics2k(OceanOptics):
 	
 	@property
 	def integration_time(self):
-	    """Integration time in milliseconds"""
-	    return int(self._query_status()[2:4].encode('hex'), 16)
+	    """Integration time in seconds"""
+	    return int(self._query_status()[2:4].encode('hex'), 16) * 1e-3
 
 	@integration_time.setter
 	def integration_time(self, value):
-		packed_value = struct.pack('<I', value)
+		if value < self._min_integration_time:
+			raise ValueError('Minimum integration time is '
+				'{}'.format(self._min_integration_time))
+		packed_value = struct.pack('<H', value * 1e3)
 		vpp43.write(self._vi, '\x02' + packed_value)
 	
 	@property
@@ -272,6 +285,7 @@ class HR2000(OceanOptics2k):
 class OceanOptics4k(OceanOptics):
 	_in_pipe = 0x81
 	_out_pipe = 0x01
+	_min_integration_time = 1e-5
 
 	def __init__(self, *args, **kwargs):
 		OceanOptics.__init__(self, *args, **kwargs)
@@ -280,6 +294,19 @@ class OceanOptics4k(OceanOptics):
 		#usb_speed = ord(self._query_status()[14])
 		#self._usb_speed = 'high' if usb_speed == 128 else 'full'
 		# 128 = High, 480 Mbps; 0 = Full, 12 Mbps
+
+	@property
+	def integration_time(self):
+	    """Integration time in seconds"""
+	    return int(self._query_status()[2:6].encode('hex'), 16) * 1e-6
+
+	@integration_time.setter
+	def integration_time(self, value):
+		if value < self._min_integration_time:
+			raise ValueError('Minimum integration time is '
+				'{}'.format(self._min_integration_time))
+		packed_value = struct.pack('<I', value * 1e6)
+		vpp43.write(self._vi, '\x02' + packed_value)
 
 class HR4000(OceanOptics4k):
 	_model_code = 4114
@@ -342,7 +369,7 @@ class Torus(OceanOptics4k):
 # reusable Mini Spectrometer component for testing
 
 if __name__ == '__main__':
-	from traits.api import HasTraits, Str, Int, Array, Instance
+	from traits.api import HasTraits, Str, Int, Float, Array, Instance
 	from traitsui.api import View, Item, HGroup, VGroup, Handler
 	from chaco.api import Plot, ArrayPlotData
 	from enable.api import ComponentEditor
@@ -358,7 +385,7 @@ if __name__ == '__main__':
 		# Traits
 		serial_number = Str()
 		num_pixels = Int()
-		integration_time = Int()
+		integration_time = Float()
 		wavelengths = Array()
 		spectrum = Array()
 		graph = Instance(Plot)
@@ -372,8 +399,7 @@ if __name__ == '__main__':
 						format_str='%s,'),
 					Item('num_pixels', show_label=False, style='readonly',
 						format_str='%i pixels,'),
-					Item('integration_time', show_label=False, style='readonly',
-						format_str='%i ms')
+					Item('integration_time', format_str='%e s')
 				),
 				Item('graph', editor=ComponentEditor(), show_label=False)
 			),
@@ -384,7 +410,7 @@ if __name__ == '__main__':
 
 		def __init__(self, *args, **kwargs):
 			super(MiniSpectrometer, self).__init__(*args, **kwargs)
-			self._sm = autodetect_spectrometer('USB2000')
+			self._sm = autodetect_spectrometer('USB2000P')
 			self._sm.open()
 
 			self.serial_number = self._sm.serial_number
@@ -407,6 +433,10 @@ if __name__ == '__main__':
 
 		def _spectrum_changed(self, new_data):
 			self._plotdata.set_data('counts', new_data)
+
+		def _integration_time_changed(self, value):
+			self._sm.integration_time = value
+			self.integration_time = self._sm.integration_time
 
 		def _update_plot(self):
 			self.spectrum = self._sm.read_spectrum()
