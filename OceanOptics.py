@@ -283,6 +283,11 @@ class USB2000(OceanOptics2k):
 	def __init__(self, *args, **kwargs):
 		OceanOptics2k.__init__(self, *args, **kwargs)
 
+	# USB2000 reverses the endianness of its number of pixels?!?!
+	@property
+	def num_pixels(self):
+		return struct.unpack('>H', self._query_status()[0:2])[0]
+
 class ADC1000(OceanOptics2k):
 	_model_code = 4100
 	def __init__(self, *args, **kwargs):
@@ -487,7 +492,7 @@ if __name__ == '__main__':
 
 		def __init__(self, *args, **kwargs):
 			super(MiniSpectrometer, self).__init__(*args, **kwargs)
-			self._sm = autodetect_spectrometer('USB2000P')
+			self._sm = autodetect_spectrometer('USB2000')
 			self._sm.open()
 
 			self.serial_number = self._sm.serial_number
