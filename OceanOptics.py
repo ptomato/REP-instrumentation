@@ -521,8 +521,7 @@ if __name__ == '__main__':
 			self.integration_time = self._sm.integration_time
 
 		def _update_plot(self):
-			if not self._sm.data_ready:
-				self.spectrum = self._sm.read_spectrum()
+			self.spectrum = self._sm.read_spectrum()
 
 		def configure_traits(self, *args, **kw):
 			# Start the timer when showing the window
