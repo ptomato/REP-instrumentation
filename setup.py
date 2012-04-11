@@ -13,11 +13,11 @@ setup(name='REP-instrumentation',
         'pyvisa',
         'VideoCapture (>= 0.9.5)'
     ],
-    py_modules=[
-    	'Camera',
-    	'ApogeeCam',
-    	'Webcam',
-    	'DirectShow',
-    	'esp300',
-    	'OceanOptics',
+    packages=[
+        'rep',
+        'rep.generic',
+        'rep.apogee',
+        'rep.newport',
+        'rep.ocean_optics',
+        #'rep.spectra_physics'
     ])

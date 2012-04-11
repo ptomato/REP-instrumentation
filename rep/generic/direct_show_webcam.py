@@ -1,9 +1,9 @@
 import numpy as N
 import VideoCapture
 
-from Camera import *
+from rep.generic.camera import Camera, CameraError
 
-class DirectShow(Camera):
+class DirectShowWebcam(Camera):
     '''Camera that interfaces through DirectShow'''
     
     def __init__(self, *args, **kwargs):

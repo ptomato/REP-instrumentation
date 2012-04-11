@@ -1,6 +1,8 @@
 import visa
 import pyvisa.visa_exceptions
 
+__all__ = ['ESP300Error', 'ESP300']
+
 class ESP300Error(Exception):
     def __init__(self, code, timestamp, message):
         self.code = code

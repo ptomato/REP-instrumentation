@@ -4,9 +4,9 @@ import win32com.client
 win32com.client.gencache.EnsureModule('{A2882C73-7CFB-11D4-9155-0060676644C1}', 0, 1, 0)
 from win32com.client import constants as Constants
 
-from Camera import *
+from rep.generic.camera import Camera
 
-class ApogeeCam(Camera):
+class AltaAscent(Camera):
     '''Apogee Alta or Ascent camera'''
     
     def __init__(self, interface='usb', *args, **kwargs):

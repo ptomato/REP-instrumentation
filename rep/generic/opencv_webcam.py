@@ -3,7 +3,7 @@ from cv import CV_CAP_PROP_FRAME_WIDTH as FRAME_WIDTH
 from cv import CV_CAP_PROP_FRAME_HEIGHT as FRAME_HEIGHT
 import numpy as N
 
-from Camera import *
+from rep.generic.camera import Camera, CameraError
 
 def ipl2array(im):
 	'''Converts an IplImage @im to a NumPy array.
@@ -24,7 +24,7 @@ def ipl2array(im):
 	a.shape = (im.height, im.width, im.nChannels)
 	return a 
 
-class Webcam(Camera):
+class OpenCVWebcam(Camera):
 	def __init__(self, *args, **kwargs):
 		Camera.__init__(self, *args, **kwargs)
 		self._capture = None

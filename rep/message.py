@@ -5,6 +5,8 @@ import getpass
 import time
 import traceback
 
+__all__ = ['send_email_done', 'send_email_crash']
+
 _done_string = '''
 Dear {recipient},
 
