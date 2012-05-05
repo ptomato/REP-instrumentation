@@ -1,2 +1,6 @@
-﻿/*.pyc
+/*.pyc
 /build
+/dist
+MANIFEST
+/_site
+awesome.css
