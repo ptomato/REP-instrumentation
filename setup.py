@@ -3,11 +3,11 @@
 from distutils.core import setup
 
 setup(name='REP-instrumentation',
-    version='0',
+    version='0.20120411',
     description='Python interfaces to lab instruments',
-    author='P. F. Chimento',
+    author='Philip Chimento',
     author_email='philip.chimento@gmail.com',
-    url='https://github.com/ptomato/REP-instrumentation',
+    url='http://ptomato.github.com/REP-instrumentation',
     license='gpl3',
     requires=[
         'pyvisa',
