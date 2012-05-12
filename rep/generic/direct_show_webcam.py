@@ -1,7 +1,15 @@
 import numpy as N
-import VideoCapture
+try:
+    import VideoCapture
+except ImportError:
+    # Create a fake module so that we can still build the documentation even if
+    # VideoCapture isn't available
+    class _FakeModule:
+        def __getattr__(self, name):
+            raise ImportError("Couldn't import VideoCapture")
+    VideoCapture = _FakeModule()
 
-from rep.generic.camera import Camera, CameraError
+from ..generic import Camera, CameraError
 
 
 class DirectShowWebcam(Camera):

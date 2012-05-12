@@ -1,10 +1,19 @@
 import numpy as N
-import win32com.client
-# generate and import apogee ActiveX module
-win32com.client.gencache.EnsureModule('{A2882C73-7CFB-11D4-9155-0060676644C1}', 0, 1, 0)
-from win32com.client import constants as Constants
+try:
+    import win32com.client
+    # generate and import apogee ActiveX module
+    win32com.client.gencache.EnsureModule('{A2882C73-7CFB-11D4-9155-0060676644C1}', 0, 1, 0)
+    from win32com.client import constants as Constants
+except ImportError:
+    # Create a fake module so that we can still build the documentation even if
+    # win32com isn't available
+    class _FakeModule:
+        def __getattr__(self, name):
+            raise ImportError("Couldn't import win32com.client")
+    win32com = _FakeModule()
+    Constants = _FakeModule()
 
-from rep.generic.camera import Camera, CameraError
+from ..generic import Camera, CameraError
 
 
 class AltaAscent(Camera):

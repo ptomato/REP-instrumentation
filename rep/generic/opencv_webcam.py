@@ -1,9 +1,17 @@
-import cv
-from cv import CV_CAP_PROP_FRAME_WIDTH as FRAME_WIDTH
-from cv import CV_CAP_PROP_FRAME_HEIGHT as FRAME_HEIGHT
+try:
+    import cv
+    from cv import CV_CAP_PROP_FRAME_WIDTH as FRAME_WIDTH
+    from cv import CV_CAP_PROP_FRAME_HEIGHT as FRAME_HEIGHT
+except ImportError:
+    # Create a fake module so that we can still build the documentation even if
+    # OpenCV isn't available
+    class _FakeModule:
+        def __getattr__(self, name):
+            raise ImportError("Couldn't import cv")
+    cv = _FakeModule()
 import numpy as N
 
-from rep.generic.camera import Camera, CameraError
+from ..generic import Camera, CameraError
 
 
 def ipl2array(im):
