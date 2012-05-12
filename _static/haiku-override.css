@@ -1,0 +1,110 @@
+@import url("haiku.css");
+
+body {
+    font-family: "Droid Serif", Cambria, Serif;
+	min-width: 500px;
+	max-width: 100%;
+}
+
+tt {
+    font-family: "Bitstream Vera Mono", "DejaVu Sans Mono", Consolas, Monospace;
+}
+
+h1, h2, h3, h4 {
+    font-family: "Droid Sans", Calibri, Sans;
+}
+
+/* Get rid of letter spacing in footer */
+.footer {
+	letter-spacing: 0;
+}
+
+div.section {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+div.section h1,
+div.section h2,
+div.section h3,
+div.section h4  {
+    margin-left: -50px;
+    margin-right: -50px;
+}
+
+div.topnav p, div.bottomnav p {
+    text-align: center;
+    color: white;
+}
+div.topnav a, div.bottomnav a {
+    color: #eeeeec;
+}
+div.topnav, div.bottomnav {
+    background: #3465a4;
+}
+
+dl.class > dt {
+	-webkit-border-radius: 10px 10px 0 0;
+    -khtml-border-radius: 10px 10px 0 0;
+    -moz-border-radius: 10px 10px 0 0;
+    border-radius: 10px 10px 0 0;
+	border-style: solid;
+    border-width: thin;
+    border-color: #5c3566;
+	background: #ad7fa8;
+	padding: 10px;
+	margin-bottom: 0;
+	color: white;
+}
+
+dl.class > dd {
+	-webkit-border-radius: 0 0 10px 10px;
+    -khtml-border-radius: 0 0 10px 10px;
+    -moz-border-radius: 0 0 10px 10px;
+    border-radius: 0 0 10px 10px;
+	border-style: solid;
+	border-width: 0 thin thin thin;
+	border-color: #5c3566;
+	padding: 10px;
+	margin-top: 0;
+	margin-left: 0;
+}
+
+.property {
+	margin-right: 3px;
+}
+
+a.headerlink {
+	padding: 3px;
+	margin-left: 0.5em;
+}
+
+a.headerlink:hover {
+	background: #73d216;
+	color: white;
+	text-decoration: none;
+}
+
+/* Figure stuff */
+
+div.figure {
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	border-style: solid;
+	border-width: thin;
+	border-color: #babdb6;
+	padding: 10px;
+	background: #eeeeec;
+}
+
+div.figure > img {
+	border-style: solid;
+	border-width: thin;
+	border-color: #babdb6;
+}
+
+.caption {
+	font-size: 80%;
+}

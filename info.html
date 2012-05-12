@@ -1,0 +1,122 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Information and FAQ &mdash; REP Instrumentation 0.20120411 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku-override.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/print.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.20120411',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/theme_extras.js"></script>
+    <link rel="top" title="REP Instrumentation 0.20120411 documentation" href="index.html" />
+    <link rel="next" title="General examples" href="example.html" />
+    <link rel="prev" title="REP Instrumentation" href="index.html" /> 
+  </head>
+  <body>
+      <div class="header"><h1 class="heading"><a href="index.html">
+          <span>REP Instrumentation 0.20120411 documentation</span></a></h1>
+        <h2 class="heading"><span>Information and FAQ</span></h2>
+      </div>
+      <div class="topnav">
+      
+        <p>
+        «&#160;&#160;<a href="index.html">REP Instrumentation</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="example.html">General examples</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="information-and-faq">
+<h1>Information and FAQ<a class="headerlink" href="#information-and-faq" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="what-devices-can-rep-control">
+<h2>What devices can REP control?<a class="headerlink" href="#what-devices-can-rep-control" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Apogee CCD cameras (tested on Alta U1)</li>
+<li>Webcams (any that will work with OpenCV or DirectShow)</li>
+<li>Newport ESP300 motion controller</li>
+<li>Ocean Optics spectrometers (tested on USB2000)</li>
+</ul>
+<p>Not all functionality of each device is available.
+I programmed <strong>REP</strong> according to my own needs in the lab.</p>
+</div>
+<div class="section" id="will-you-add-device-x">
+<h2>Will you add device X?<a class="headerlink" href="#will-you-add-device-x" title="Permalink to this headline">¶</a></h2>
+<p>Short answer: <strong>yes, for money.</strong></p>
+<p>Long answer:
+<strong>REP</strong> is basically me dumping my lab code onto the internet.
+Physics research is my day job, not writing code, so I code only what I have to to get my experiments done.
+I make the code presentable and write the documentation in my spare time.</p>
+<p>I enjoy writing code, but there are other projects that I&#8217;d rather work on in my free time: for one thing, I don&#8217;t have the resources to hook up lab instruments at home and test them.
+So I&#8217;d be happy to write code to control your instrument, but my development model is that you hire me <strong>as an external consultant.</strong>
+My rates depend on how <strong>complicated</strong> the task is and what your <strong>requirements</strong> are.
+In addition, there has to be some way for me to have access to the instrument, to test it.</p>
+<p>For an estimate, contact me at <strong>philip (dot) chimento (at) gmail (dot) com</strong>.</p>
+<p>If you can&#8217;t or don&#8217;t want to pay for development, why not consider writing your instrument driver yourself using the <strong>REP</strong> framework and <strong>contributing it</strong> to the project?
+That way, <strong>everybody benefits!</strong></p>
+</div>
+<div class="section" id="is-rep-bug-free">
+<h2>Is REP bug-free?<a class="headerlink" href="#is-rep-bug-free" title="Permalink to this headline">¶</a></h2>
+<p>Emphatically not.
+<strong>No code, ever, is bug-free.</strong>
+This is usually not a problem, but this code is meant to control actual physical machines which can malfunction.
+Therefore, it is important that you realize that although I may be an <strong>excellent programmer</strong>, I make <strong>no guarantees whatsoever</strong> that REP will not fry your expensive lab equipment, explode your lab, annoy your cat, or change every ‘e’ in your doctoral thesis to ‘ə’.</p>
+</div>
+<div class="section" id="why-is-it-called-rep">
+<h2>Why is it called REP?<a class="headerlink" href="#why-is-it-called-rep" title="Permalink to this headline">¶</a></h2>
+<p>One day I learned of the device called <a class="reference external" href="http://www.qdusa.com/products/ppms.html">PPMS</a> <a class="footnote-reference" href="#id2" id="id1">[1]</a>, which stands for the ridiculously generic name of “Physical Properties Measurement System.”
+Indeed, I can&#8217;t think of a physics experiment that doesn&#8217;t measure physical properties.
+Instantly, I knew that my instrumentation library would be given the equally ridiculously generic name of <strong>Research in Experimental Physics</strong>.</p>
+<hr class="docutils" />
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>“PPMS” is a trademark of Quantum Design, Inc.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        «&#160;&#160;<a href="index.html">REP Instrumentation</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="example.html">General examples</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2012, Philip Chimento.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

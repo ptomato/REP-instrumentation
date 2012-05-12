@@ -1,0 +1,199 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Generic instruments &mdash; REP Instrumentation 0.20120411 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku-override.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/print.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.20120411',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/theme_extras.js"></script>
+    <link rel="top" title="REP Instrumentation 0.20120411 documentation" href="index.html" />
+    <link rel="next" title="E-mail notification" href="message.html" />
+    <link rel="prev" title="General examples" href="example.html" /> 
+  </head>
+  <body>
+      <div class="header"><h1 class="heading"><a href="index.html">
+          <span>REP Instrumentation 0.20120411 documentation</span></a></h1>
+        <h2 class="heading"><span>Generic instruments</span></h2>
+      </div>
+      <div class="topnav">
+      
+        <p>
+        «&#160;&#160;<a href="example.html">General examples</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="message.html">E-mail notification</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="generic-instruments">
+<h1>Generic instruments<a class="headerlink" href="#generic-instruments" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="rep.generic.Camera">
+<em class="property">class </em><tt class="descclassname">rep.generic.</tt><tt class="descname">Camera</tt><big>(</big><em>cam=-1</em><big>)</big><a class="headerlink" href="#rep.generic.Camera" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="method">
+<dt id="rep.generic.Camera.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#rep.generic.Camera.close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rep.generic.Camera.configure">
+<tt class="descname">configure</tt><big>(</big><big>)</big><a class="headerlink" href="#rep.generic.Camera.configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens a dialog to set the camera&#8217;s parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rep.generic.Camera.find_resolutions">
+<tt class="descname">find_resolutions</tt><big>(</big><big>)</big><a class="headerlink" href="#rep.generic.Camera.find_resolutions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of resolution tuples that this camera supports.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="rep.generic.Camera.id_string">
+<tt class="descname">id_string</tt><a class="headerlink" href="#rep.generic.Camera.id_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rep.generic.Camera.open">
+<tt class="descname">open</tt><big>(</big><big>)</big><a class="headerlink" href="#rep.generic.Camera.open" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rep.generic.Camera.query_frame">
+<tt class="descname">query_frame</tt><big>(</big><big>)</big><a class="headerlink" href="#rep.generic.Camera.query_frame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="rep.generic.Camera.resolution">
+<tt class="descname">resolution</tt><a class="headerlink" href="#rep.generic.Camera.resolution" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="rep.generic.Camera.roi">
+<tt class="descname">roi</tt><a class="headerlink" href="#rep.generic.Camera.roi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="rep.generic.CameraError">
+<em class="property">class </em><tt class="descclassname">rep.generic.</tt><tt class="descname">CameraError</tt><big>(</big><em>msg</em>, <em>cam</em><big>)</big><a class="headerlink" href="#rep.generic.CameraError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="rep.generic.DirectShowWebcam">
+<em class="property">class </em><tt class="descclassname">rep.generic.</tt><tt class="descname">DirectShowWebcam</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#rep.generic.DirectShowWebcam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">rep.generic.camera.Camera</span></tt></p>
+<p>Camera that interfaces through DirectShow</p>
+<dl class="method">
+<dt id="rep.generic.DirectShowWebcam.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#rep.generic.DirectShowWebcam.close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rep.generic.DirectShowWebcam.configure">
+<tt class="descname">configure</tt><big>(</big><big>)</big><a class="headerlink" href="#rep.generic.DirectShowWebcam.configure" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="rep.generic.DirectShowWebcam.id_string">
+<tt class="descname">id_string</tt><a class="headerlink" href="#rep.generic.DirectShowWebcam.id_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rep.generic.DirectShowWebcam.open">
+<tt class="descname">open</tt><big>(</big><big>)</big><a class="headerlink" href="#rep.generic.DirectShowWebcam.open" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rep.generic.DirectShowWebcam.query_frame">
+<tt class="descname">query_frame</tt><big>(</big><big>)</big><a class="headerlink" href="#rep.generic.DirectShowWebcam.query_frame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="rep.generic.DirectShowWebcam.resolution">
+<tt class="descname">resolution</tt><a class="headerlink" href="#rep.generic.DirectShowWebcam.resolution" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="rep.generic.OpenCVWebcam">
+<em class="property">class </em><tt class="descclassname">rep.generic.</tt><tt class="descname">OpenCVWebcam</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#rep.generic.OpenCVWebcam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">rep.generic.camera.Camera</span></tt></p>
+<dl class="method">
+<dt id="rep.generic.OpenCVWebcam.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#rep.generic.OpenCVWebcam.close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="rep.generic.OpenCVWebcam.id_string">
+<tt class="descname">id_string</tt><a class="headerlink" href="#rep.generic.OpenCVWebcam.id_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rep.generic.OpenCVWebcam.open">
+<tt class="descname">open</tt><big>(</big><big>)</big><a class="headerlink" href="#rep.generic.OpenCVWebcam.open" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rep.generic.OpenCVWebcam.query_frame">
+<tt class="descname">query_frame</tt><big>(</big><big>)</big><a class="headerlink" href="#rep.generic.OpenCVWebcam.query_frame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="rep.generic.OpenCVWebcam.resolution">
+<tt class="descname">resolution</tt><a class="headerlink" href="#rep.generic.OpenCVWebcam.resolution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resolution of the webcam - a 2-tuple</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        «&#160;&#160;<a href="example.html">General examples</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="message.html">E-mail notification</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2012, Philip Chimento.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

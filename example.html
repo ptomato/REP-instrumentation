@@ -1,0 +1,110 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>General examples &mdash; REP Instrumentation 0.20120411 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku-override.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/print.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.20120411',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/theme_extras.js"></script>
+    <link rel="top" title="REP Instrumentation 0.20120411 documentation" href="index.html" />
+    <link rel="next" title="Generic instruments" href="generic.html" />
+    <link rel="prev" title="Information and FAQ" href="info.html" /> 
+  </head>
+  <body>
+      <div class="header"><h1 class="heading"><a href="index.html">
+          <span>REP Instrumentation 0.20120411 documentation</span></a></h1>
+        <h2 class="heading"><span>General examples</span></h2>
+      </div>
+      <div class="topnav">
+      
+        <p>
+        «&#160;&#160;<a href="info.html">Information and FAQ</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="generic.html">Generic instruments</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="general-examples">
+<h1>General examples<a class="headerlink" href="#general-examples" title="Permalink to this headline">¶</a></h1>
+<p>This is the general pattern for controlling an instrument.
+Wherever possible, modules implement the context manager protocol.
+For example, to control the fictional Frobnitz StuffMeasurer 3000:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">rep.frobnitz</span> <span class="kn">import</span> <span class="n">StuffMeasurer3000</span>
+<span class="k">with</span> <span class="n">StuffMeasurer3000</span><span class="p">(</span><span class="n">port</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span> <span class="k">as</span> <span class="n">instrument</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">instrument</span><span class="o">.</span><span class="n">measure_stuff</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>If it&#8217;s not feasible to use the context manager protocol in your program, you can also initialize and shut down the instruments like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">instrument</span> <span class="o">=</span> <span class="n">StuffMeasurer3000</span><span class="p">(</span><span class="n">port</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">instrument</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">instrument</span><span class="o">.</span><span class="n">measure_stuff</span><span class="p">()</span>
+<span class="n">instrument</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="section" id="instrument-settings">
+<h2>Instrument settings<a class="headerlink" href="#instrument-settings" title="Permalink to this headline">¶</a></h2>
+<p>Instrument settings correspond to properties in Python.
+That is, you can get and set them just like any ordinary attribute, but all the necessary communication goes on behind the scenes.
+For example, to control the frequency of the Frobnitz StuffMeasurer:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">instrument</span><span class="o">.</span><span class="n">frequency</span> <span class="o">=</span> <span class="mf">440.0</span>  <span class="c"># in Hertz</span>
+<span class="k">print</span> <span class="s">&#39;Frequency is now {:.1f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">instrument</span><span class="o">.</span><span class="n">frequency</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="actions">
+<h2>Actions<a class="headerlink" href="#actions" title="Permalink to this headline">¶</a></h2>
+<p>Actions — like recording a measurement, or resetting the instrument — correspond to methods in Python.
+For example, the following code resets the StuffMeasurer before starting a new measurement:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">instrument</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<span class="n">instrument</span><span class="o">.</span><span class="n">measure_stuff</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        «&#160;&#160;<a href="info.html">Information and FAQ</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="generic.html">Generic instruments</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2012, Philip Chimento.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>
