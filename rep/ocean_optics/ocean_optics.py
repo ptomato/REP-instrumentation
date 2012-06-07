@@ -65,6 +65,9 @@ _attributes[VI_ATTR_USB_INTR_IN_STATUS]  = vpp43_types.ViInt16
 class OceanOptics(object):
 
     def __init__(self, resource_name, timeout=10000):
+        """
+        @timeout in milliseconds
+        """
         self._resource_name = resource_name
         self._timeout = timeout
 
