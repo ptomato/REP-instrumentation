@@ -175,6 +175,11 @@ class APTController(object):
 
     @property
     def position(self):
+        """
+        Position in mm. Note that assigning to this property doesn't move the
+        stage, it only resets the position counter to that value while keeping
+        the stage in the same place.
+        """
         self._send_packet(0x0411, param=(self._channel_num, 0))
         # MGMSG_MOT_REQ_POSCOUNTER
         data = self._read_packet(0x0412)  # MGMSG_MOT_GET_POSCOUNTER
@@ -184,6 +189,12 @@ class APTController(object):
                 'but device returned channel {}'.format(
                     self._channel_num, chan))
         return pos / self._position_units
+
+    @position.setter
+    def position(self, value):
+        pos_counts = value * self._position_units
+        data = struct.pack('<Hi', self._channel_num, pos_counts)
+        self._send_packet(0x0410, data=data)  # MGMSG_MOT_SET_POSCOUNTER
 
     ### PUBLIC METHODS ###
 
@@ -195,7 +206,8 @@ class APTController(object):
 
     def move_relative(self, distance):
         """
-        Initiate a relative move and wait for it to finish.
+        Initiate a relative move (distance given in mm) and wait for it to
+        finish.
         """
         distance_counts = distance * self._position_units
         data = struct.pack('<Hi', self._channel_num, distance_counts)
@@ -204,10 +216,25 @@ class APTController(object):
         # MGMSG_MOT_MOVE_RELATIVE
         self._read_packet(0x0464)  # MGMSG_MOT_MOVE_COMPLETED, ignore status
 
+    def move_absolute(self, position):
+        """
+        Initiate an absolute move (position given in mm) and wait for it to
+        finish. The position is relative to the current zero position, which can
+        be set by assigning to the `position` property.
+        """
+        position_counts = position * self._position_units
+        data = struct.pack('<Hi', self._channel_num, position_counts)
+        self._send_packet(0x0450, data=data)  # MGMSG_MOT_SET_MOVEABSPARAMS
+        self._send_packet(0x0453, param=(self._channel_num, 0))
+        # MGMSG_MOT_MOVE_ABSOLUTE
+        self._read_packet(0x0464)  # MGMSG_MOT_MOVE_COMPLETED, ignore status
+
 if __name__ == '__main__':
     dev = APTController('83823336')
     dev.identify_yourself()
     print dev.device_info
     print dev.position
-    dev.move_relative(-0.5)
+    dev.move_absolute(-1)
+    print dev.position
+    dev.move_relative(1)
     print dev.position
