@@ -20,23 +20,30 @@ class APTController(object):
         self._dev.resetDevice()
         self._dev.setRts()  # Assert the request-to-send line
 
+        # Conversion units
+        #self._position_units = 20000.0  # 1 mm = 20000 counts
+        self._velocity_units = 767369.78  # 1 mm/s = 767369.78 counts/s ?
+        self._acceleration_units = 262.0  # 1 mm/s^2 = 262 counts/s^2 ?
+        #self._jerk_units = 92.2337  # 1 mm/s^3 = 92.2337 counts/s^3
+
     def _send_packet(self, msgid, param=(0, 0), data=None, dest=0x50, source=1):
-        packet = struct.pack('<HBBBB', msgid, param[0], param[1], dest, source)
-        self._dev.write(packet)
+        if data is None:
+            packet = struct.pack('<HBBBB',
+                msgid, param[0], param[1], dest, source)
+            self._dev.write(packet)
+        else:
+            packet = struct.pack('<HHBB', msgid, len(data), dest | 0x80, source)
+            self._dev.write(packet)
+            self._dev.write(data)
 
     def _read_packet(self, expected_msgid):
         header = self._dev.read(6)
+        #print map(hex, map(ord, header))
         msgid, length, dest, source = struct.unpack('<HHBB', header)
         if msgid != expected_msgid:
             raise IOError('Expected message ID {:04X}, but received {:04X}'.format(
                 expected_msgid, msgid))
         if dest & 0x80:
-            # Data following the packet - make sure there are enough bytes
-            # available for reading to cover the expected data length
-            rx_queue_length, _, _ = self._dev.getStatus()
-            if length > rx_queue_length:
-                raise IOError('Expected {} bytes, but only {} available'.format(
-                    length, rx_queue_length))
             return self._dev.read(length)
         else:
             param1 = length & 0xFF
@@ -123,6 +130,47 @@ class APTController(object):
             garbage = ord(self._dev.read(1))
             print 'Spurious byte {:02X}'.format(garbage)
 
+    def _get_velocity_parameters(self):
+        self._send_packet(0x0414, param=(self._channel_num, 0))
+        # MGMSG_MOT_REQ_VELPARAMS
+        data = self._read_packet(0x0415)  # MGMSG_MOT_GET_VELPARAMS
+        chan, _, accel_counts, max_velocity_counts = struct.unpack('<HIII',
+            data)
+        if chan != self._channel_num:
+            raise IOError('Requested state of channel {}, '
+                'but device returned channel {}'.format(
+                    self._channel_num, chan))
+        self._accel_counts = accel_counts
+        self._max_velocity_counts = max_velocity_counts
+
+    @property
+    def acceleration(self):
+        """Acceleration in mm/s^2."""
+        self._get_velocity_parameters()
+        return self._accel_counts / self._acceleration_units
+
+    @acceleration.setter
+    def acceleration(self, value):
+        self._get_velocity_parameters()
+        data = struct.pack('<HIII', self._channel_num, 0,
+            int(value * self._acceleration_units),
+            self._max_velocity_counts)
+        self._send_packet(0x0413, data=data)  # MGMSG_MOT_SET_VELPARAMS
+
+    @property
+    def max_velocity(self):
+        """Maximum velocity in mm/s."""
+        self._get_velocity_parameters()
+        return self._max_velocity_counts / self._velocity_units
+
+    @max_velocity.setter
+    def max_velocity(self, value):
+        self._get_velocity_parameters()
+        data = struct.pack('<HIII', self._channel_num, 0,
+            self._accel_counts,
+            int(value * self._velocity_units))
+        self._send_packet(0x0413, data=data)  # MGMSG_MOT_SET_VELPARAMS
+
     def identify_yourself(self):
         """
         Identify the controller by telling it to flash its front panel LED.
@@ -133,8 +181,6 @@ if __name__ == '__main__':
     dev = APTController('83823336')
     dev.identify_yourself()
     print dev.device_info
-    print dev.channel_enabled
-    dev.channel_enabled = True
-    print dev.channel_enabled
-    dev.channel_enabled = False
-    print dev.channel_enabled
+    print dev.max_velocity
+    dev.max_velocity = 0.1
+    print dev.max_velocity
