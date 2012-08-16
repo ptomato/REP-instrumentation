@@ -44,8 +44,8 @@ class APTController(object):
             return param1, param2
 
     def _get_hardware_info(self):
-        dev._send_packet(0x0005)  # MGMSG_HW_REQ_INFO
-        data = dev._read_packet(0x0006)  # MGMSG_HW_GET_INFO
+        self._send_packet(0x0005)  # MGMSG_HW_REQ_INFO
+        data = self._read_packet(0x0006)  # MGMSG_HW_GET_INFO
         (serial_number, model_number, hw_type, minor_ver, interim_ver,
             major_ver, _, notes, _, hw_ver, hw_mod_state, n_channels) = \
             struct.unpack('<L8sHBBBB48s12sHHH', data)
