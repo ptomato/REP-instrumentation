@@ -21,10 +21,10 @@ class APTController(object):
         self._dev.setRts()  # Assert the request-to-send line
 
         # Conversion units
-        #self._position_units = 20000.0  # 1 mm = 20000 counts
+        self._position_units = 34304.0  # 1 mm = 34304 counts (Thorlabs Z825B spec)
         self._velocity_units = 767369.78  # 1 mm/s = 767369.78 counts/s ?
         self._acceleration_units = 262.0  # 1 mm/s^2 = 262 counts/s^2 ?
-        #self._jerk_units = 92.2337  # 1 mm/s^3 = 92.2337 counts/s^3
+        #self._jerk_units = 92.2337  # 1 mm/s^3 = 92.2337 counts/s^3 ??
 
     def _send_packet(self, msgid, param=(0, 0), data=None, dest=0x50, source=1):
         if data is None:
@@ -41,14 +41,16 @@ class APTController(object):
         #print map(hex, map(ord, header))
         msgid, length, dest, source = struct.unpack('<HHBB', header)
         if msgid != expected_msgid:
-            raise IOError('Expected message ID {:04X}, but received {:04X}'.format(
-                expected_msgid, msgid))
+            raise IOError('Expected message ID {:04X}, '
+                'but received {:04X}'.format(expected_msgid, msgid))
         if dest & 0x80:
             return self._dev.read(length)
         else:
             param1 = length & 0xFF
             param2 = (length >> 0xFF) & 0xFF
             return param1, param2
+
+    ### PROPERTIES ###
 
     def _get_hardware_info(self):
         self._send_packet(0x0005)  # MGMSG_HW_REQ_INFO
@@ -171,16 +173,41 @@ class APTController(object):
             int(value * self._velocity_units))
         self._send_packet(0x0413, data=data)  # MGMSG_MOT_SET_VELPARAMS
 
+    @property
+    def position(self):
+        self._send_packet(0x0411, param=(self._channel_num, 0))
+        # MGMSG_MOT_REQ_POSCOUNTER
+        data = self._read_packet(0x0412)  # MGMSG_MOT_GET_POSCOUNTER
+        chan, pos = struct.unpack('<Hi', data)
+        if chan != self._channel_num:
+            raise IOError('Requested state of channel {}, '
+                'but device returned channel {}'.format(
+                    self._channel_num, chan))
+        return pos / self._position_units
+
+    ### PUBLIC METHODS ###
+
     def identify_yourself(self):
         """
         Identify the controller by telling it to flash its front panel LED.
         """
         self._send_packet(0x0223)  # MGMSG_MOD_IDENTIFY
 
+    def move_relative(self, distance):
+        """
+        Initiate a relative move and wait for it to finish.
+        """
+        distance_counts = distance * self._position_units
+        data = struct.pack('<Hi', self._channel_num, distance_counts)
+        self._send_packet(0x0445, data=data)  # MGMSG_MOT_SET_MOVERELPARAMS
+        self._send_packet(0x0448, param=(self._channel_num, 0))
+        # MGMSG_MOT_MOVE_RELATIVE
+        self._read_packet(0x0464)  # MGMSG_MOT_MOVE_COMPLETED, ignore status
+
 if __name__ == '__main__':
     dev = APTController('83823336')
     dev.identify_yourself()
     print dev.device_info
-    print dev.max_velocity
-    dev.max_velocity = 0.1
-    print dev.max_velocity
+    print dev.position
+    dev.move_relative(-0.5)
+    print dev.position
