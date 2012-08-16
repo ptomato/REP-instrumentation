@@ -22,7 +22,23 @@ class APTController(object):
 
     def __init__(self, serial_number, stage):
         self._channel_num = 1  # only support single-channel devices for now
-        self._dev = d2xx.openEx(serial_number)
+        self._dev = None
+        self._real_serial_number = serial_number
+        self._stage_model = stage
+
+        # Conversion units
+        try:
+            (self._position_units, self._velocity_units,
+                self._acceleration_units, self._jerk_units) = \
+                _conversion_units[stage]
+        except KeyError:
+            raise ValueError('Unknown stage model {}. '
+                'Supported values: {}'.format(stage, _conversion_units.keys()))
+
+    ### CONTEXT MANAGER PROTOCOL ###
+
+    def open(self):
+        self._dev = d2xx.openEx(self._real_serial_number)
 
         # Recommended setup from Thorlabs APT Programming Guide
         self._dev.setBaudRate(d2xx.BAUD_115200)
@@ -34,14 +50,18 @@ class APTController(object):
         self._dev.resetDevice()
         self._dev.setRts()  # Assert the request-to-send line
 
-        # Conversion units
-        try:
-            (self._position_units, self._velocity_units,
-                self._acceleration_units, self._jerk_units) = \
-                _conversion_units[stage]
-        except KeyError:
-            raise ValueError('Unknown stage model {}. '
-                'Supported values: {}'.format(stage, _conversion_units.keys()))
+    def close(self):
+        self._dev.close()
+
+    def __enter__(self):
+        self.open()
+        return self
+
+    def __exit__(self, *args):
+        self.close()
+        return False  # don't suppress exceptions
+
+    ### COMMUNICATIONS ###
 
     def _send_packet(self, msgid, param=(0, 0), data=None, dest=0x50, source=1):
         if data is None:
@@ -255,11 +275,11 @@ class APTController(object):
         self._read_packet(0x0444)  # MGMSG_MOT_MOVE_HOMED, ignore status
 
 if __name__ == '__main__':
-    dev = APTController('83823336', stage='Z825B')
-    dev.identify_yourself()
-    print dev.device_info
-    print dev.position
-    dev.move_absolute(-1)
-    print dev.position
-    dev.move_relative(1)
-    print dev.position
+    with APTController('83823336', stage='Z825B') as dev:
+        dev.identify_yourself()
+        print dev.device_info
+        print dev.position
+        dev.move_absolute(-1)
+        print dev.position
+        dev.move_relative(1)
+        print dev.position
