@@ -97,7 +97,7 @@ class APTController(object):
     def channel_enabled(self):
         #if self._channel_num > self.n_channels:
         #    raise ValueError('Invalid channel number {}'.self._channel_num)
-        self._send_packet(0x0211, param=(1, 0))
+        self._send_packet(0x0211, param=(self._channel_num, 0))
         # MGMSG_MOD_REQ_CHANENABLESTATE
         chan, state = self._read_packet(0x0212)  # MGMSG_MOD_GET_CHANENABLESTATE
         if chan != self._channel_num:
@@ -114,7 +114,7 @@ class APTController(object):
     @channel_enabled.setter
     def channel_enabled(self, value):
         state = (2, 1)[int(bool(value))]
-        self._send_packet(0x0210, param=(1, state))
+        self._send_packet(0x0210, param=(self._channel_num, state))
         # MGMSG_MOD_SET_CHANENABLESTATE
 
         # A spurious 0 byte is placed in the queue??
