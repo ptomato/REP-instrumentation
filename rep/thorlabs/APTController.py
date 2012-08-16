@@ -1,12 +1,26 @@
 import time
 import struct
-import numpy as N
 import d2xx
+
+# Position, velocity, acceleration, jerk (1 mm/s^n = X counts/s^n, n=0..3)
+# Note: not all of these are necessarily supported!
+_conversion_units = {
+    'MLS203': (20000.0, 134218.0, 13.7439, 92.2337),
+    'BBD101': (20000.0, 134218.0, 13.7439, 92.2337),
+    'BBD102': (20000.0, 134218.0, 13.7439, 92.2337),
+    'BBD103': (20000.0, 134218.0, 13.7439, 92.2337),
+    'BBD201': (20000.0, 134218.0, 13.7439, 92.2337),
+    'BBD202': (20000.0, 134218.0, 13.7439, 92.2337),
+    'BBD203': (20000.0, 134218.0, 13.7439, 92.2337),
+    # Sources: APT programming manual (not tested)
+    'Z825B': (34304.0, 767369.78, 262.0, None)
+    # Sources: Thorlabs Z825B spec, Thorlabs APT driver settings, id., unknown
+}
 
 
 class APTController(object):
 
-    def __init__(self, serial_number):
+    def __init__(self, serial_number, stage):
         self._channel_num = 1  # only support single-channel devices for now
         self._dev = d2xx.openEx(serial_number)
 
@@ -21,10 +35,13 @@ class APTController(object):
         self._dev.setRts()  # Assert the request-to-send line
 
         # Conversion units
-        self._position_units = 34304.0  # 1 mm = 34304 counts (Thorlabs Z825B spec)
-        self._velocity_units = 767369.78  # 1 mm/s = 767369.78 counts/s ?
-        self._acceleration_units = 262.0  # 1 mm/s^2 = 262 counts/s^2 ?
-        #self._jerk_units = 92.2337  # 1 mm/s^3 = 92.2337 counts/s^3 ??
+        try:
+            (self._position_units, self._velocity_units,
+                self._acceleration_units, self._jerk_units) = \
+                _conversion_units[stage]
+        except KeyError:
+            raise ValueError('Unknown stage model {}. '
+                'Supported values: {}'.format(stage, _conversion_units.keys()))
 
     def _send_packet(self, msgid, param=(0, 0), data=None, dest=0x50, source=1):
         if data is None:
@@ -229,8 +246,16 @@ class APTController(object):
         # MGMSG_MOT_MOVE_ABSOLUTE
         self._read_packet(0x0464)  # MGMSG_MOT_MOVE_COMPLETED, ignore status
 
+    def move_home(self):
+        """
+        Initiate a homing sequence and wait for it to finish.
+        """
+        self._send_packet(0x0443, param=(self._channel_num, 0))
+        # MGMSG_MOT_MOVE_HOME
+        self._read_packet(0x0444)  # MGMSG_MOT_MOVE_HOMED, ignore status
+
 if __name__ == '__main__':
-    dev = APTController('83823336')
+    dev = APTController('83823336', stage='Z825B')
     dev.identify_yourself()
     print dev.device_info
     print dev.position
