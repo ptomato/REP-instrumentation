@@ -19,5 +19,6 @@ setup(name='REP-instrumentation',
         'rep.apogee',
         'rep.newport',
         'rep.ocean_optics',
+        'rep.thorlabs',
         #'rep.spectra_physics'
     ])
