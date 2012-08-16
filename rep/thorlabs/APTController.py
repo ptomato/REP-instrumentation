@@ -7,6 +7,7 @@ import d2xx
 class APTController(object):
 
     def __init__(self, serial_number):
+        self._channel_num = 1  # only support single-channel devices for now
         self._dev = d2xx.openEx(serial_number)
 
         # Recommended setup from Thorlabs APT Programming Guide
@@ -27,8 +28,8 @@ class APTController(object):
         header = self._dev.read(6)
         msgid, length, dest, source = struct.unpack('<HHBB', header)
         if msgid != expected_msgid:
-            raise IOError('Expected message ID {}, but received {}'.format(
-                msgid, expected_msgid))
+            raise IOError('Expected message ID {:04X}, but received {:04X}'.format(
+                expected_msgid, msgid))
         if dest & 0x80:
             # Data following the packet - make sure there are enough bytes
             # available for reading to cover the expected data length
@@ -37,10 +38,14 @@ class APTController(object):
                 raise IOError('Expected {} bytes, but only {} available'.format(
                     length, rx_queue_length))
             return self._dev.read(length)
+        else:
+            param1 = length & 0xFF
+            param2 = (length >> 0xFF) & 0xFF
+            return param1, param2
 
     def _get_hardware_info(self):
-        dev._send_packet(0x0005)
-        data = dev._read_packet(0x0006)
+        dev._send_packet(0x0005)  # MGMSG_HW_REQ_INFO
+        data = dev._read_packet(0x0006)  # MGMSG_HW_GET_INFO
         (serial_number, model_number, hw_type, minor_ver, interim_ver,
             major_ver, _, notes, _, hw_ver, hw_mod_state, n_channels) = \
             struct.unpack('<L8sHBBBB48s12sHHH', data)
@@ -88,13 +93,48 @@ class APTController(object):
         However, it doesn't seem to be confined to those two values.
         """)
 
+    @property
+    def channel_enabled(self):
+        #if self._channel_num > self.n_channels:
+        #    raise ValueError('Invalid channel number {}'.self._channel_num)
+        self._send_packet(0x0211, param=(1, 0))
+        # MGMSG_MOD_REQ_CHANENABLESTATE
+        chan, state = self._read_packet(0x0212)  # MGMSG_MOD_GET_CHANENABLESTATE
+        if chan != self._channel_num:
+            raise IOError('Requested state of channel {}, '
+                'but device returned channel {}'.format(
+                    self._channel_num, chan))
+        if state in (0, 1):  # apparently 0 is valid as well?!
+            return True
+        elif state == 2:
+            return False
+        else:
+            raise IOError('Device returned invalid state {}'.format(state))
+
+    @channel_enabled.setter
+    def channel_enabled(self, value):
+        state = (2, 1)[int(bool(value))]
+        self._send_packet(0x0210, param=(1, state))
+        # MGMSG_MOD_SET_CHANENABLESTATE
+
+        # A spurious 0 byte is placed in the queue??
+        rx_queue_length, _, _ = self._dev.getStatus()
+        if rx_queue_length == 1:
+            garbage = ord(self._dev.read(1))
+            print 'Spurious byte {:02X}'.format(garbage)
+
     def identify_yourself(self):
         """
         Identify the controller by telling it to flash its front panel LED.
         """
-        self._send_packet(0x0223)
+        self._send_packet(0x0223)  # MGMSG_MOD_IDENTIFY
 
 if __name__ == '__main__':
     dev = APTController('83823336')
     dev.identify_yourself()
-    print dev.hardware_type
+    print dev.device_info
+    print dev.channel_enabled
+    dev.channel_enabled = True
+    print dev.channel_enabled
+    dev.channel_enabled = False
+    print dev.channel_enabled
