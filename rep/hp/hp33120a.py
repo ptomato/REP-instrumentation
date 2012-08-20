@@ -25,7 +25,6 @@ class HP33120A(visa.GpibInstrument):
         parameter in volts.
         """
         # Must divide by 2, because the offset is in peak-to-peak volts?!
-        print 'APPL:DC DEF,DEF,{:f}'.format(voltage / 2.0)
         self.write('APPL:DC DEF,DEF,{:f}'.format(voltage / 2.0))
 
 if __name__ == '__main__':
