@@ -12,6 +12,13 @@ class HP33120A(visa.GpibInstrument):
     def id_string(self):
         return self.ask('*idn?')
 
+    # Dummy context manager
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        pass
+
     def set_dc_voltage(self, voltage):
         """
         Set the function generator to output a DC voltage. Specify the @voltage
