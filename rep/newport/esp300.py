@@ -68,9 +68,13 @@ class ESP300(visa.GpibInstrument, object):
 
     def _check_error(self):
         response = self.ask('TB?').split(',')
-        code, timestamp, message = int(response[0]), int(response[1]), response[2]
-        if code != 0:
-            raise ESP300Error(code, timestamp, message)
+        try:
+            code, timestamp, message = int(response[0]), int(response[1]), response[2]
+            if code != 0:
+                raise ESP300Error(code, timestamp, message)
+        except ValueError:  # error code garbled
+            raise ESP300Error(0, 0, 'An error occurred. '
+                'In addition, the error message was garbled.')
 
     def move_relative(self, distance, axis=1):
         '''PR command - move relative'''
