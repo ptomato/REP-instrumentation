@@ -52,11 +52,13 @@ class ESP300(visa.GpibInstrument, object):
         self.term_chars = visa.CR + visa.LF
         self.send_end = True
         # Send UNTALK and UNLISTEN over the GPIB bus after each read and write
-        # operation. See Newport ESP300 programmer's manual, page 6:
-        # ftp://download.newport.com/MotionControl/Archive/Motion%20Controllers/ESP300/Software/ESP300%20GPIB%20Communication.pdf
+        # operation. See http://www.newport.com/servicesupport/document.aspx?doc=1237&searchfor=esp300
         # and NI-VISA user manual, page 9-1:
         # http://www.ni.com/pdf/manuals/370423a.pdf
-        vpp43.set_attribute(self.vi, VI_ATTR_GPIB_UNADDR_EN, VI_TRUE)
+        # vpp43.set_attribute(self.vi, VI_ATTR_GPIB_UNADDR_EN, VI_TRUE)
+        # ACTUALLY, it crashes the GPIB, so don't do it! Thanks, Newport.
+        # Another suggestion is to have a delay of 1-10 ms after each write.
+        self.delay = 0.01
 
         self.velocity = AxisProperty(self, 'VA')
         self.acceleration = AxisProperty(self, 'AC')
