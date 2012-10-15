@@ -1,4 +1,7 @@
 import visa
+from pyvisa import vpp43
+from pyvisa.vpp43_attributes import VI_ATTR_GPIB_UNADDR_EN
+from pyvisa.vpp43_constants import VI_TRUE
 import pyvisa.visa_exceptions
 
 __all__ = ['ESP300Error', 'ESP300']
@@ -45,6 +48,16 @@ class AxisProperty(object):
 class ESP300(visa.GpibInstrument, object):
     def __init__(self, *args, **kwargs):
         visa.GpibInstrument.__init__(self, *args, **kwargs)
+        # The defaults, but just make sure:
+        self.term_chars = visa.CR + visa.LF
+        self.send_end = True
+        # Send UNTALK and UNLISTEN over the GPIB bus after each read and write
+        # operation. See Newport ESP300 programmer's manual, page 6:
+        # ftp://download.newport.com/MotionControl/Archive/Motion%20Controllers/ESP300/Software/ESP300%20GPIB%20Communication.pdf
+        # and NI-VISA user manual, page 9-1:
+        # http://www.ni.com/pdf/manuals/370423a.pdf
+        vpp43.set_attribute(self.vi, VI_ATTR_GPIB_UNADDR_EN, VI_TRUE)
+
         self.velocity = AxisProperty(self, 'VA')
         self.acceleration = AxisProperty(self, 'AC')
         self.deceleration = AxisProperty(self, 'AG')
