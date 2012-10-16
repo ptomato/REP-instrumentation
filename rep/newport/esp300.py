@@ -1,7 +1,4 @@
 import visa
-from pyvisa import vpp43
-from pyvisa.vpp43_attributes import VI_ATTR_GPIB_UNADDR_EN
-from pyvisa.vpp43_constants import VI_TRUE
 import pyvisa.visa_exceptions
 
 __all__ = ['ESP300Error', 'ESP300']
