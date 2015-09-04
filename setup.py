@@ -10,7 +10,7 @@ setup(name='REP-instrumentation',
     url='http://ptomato.github.com/REP-instrumentation',
     license='gpl3',
     requires=[
-        'pyvisa',
+        'pyvisa (< 1.5)',
         'VideoCapture (>= 0.9.5)'
     ],
     packages=[
